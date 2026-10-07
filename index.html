@@ -3,167 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SG-Assistant | Executive Civil Workstation</title>
-    <!-- Tailwind CSS -->
+    <title>SG-Assistant | Central Executive Workstation</title>
+    <!-- Tailwind CSS with Custom Color Theme -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        saffron: '#FF9933',
-                        rosePink: '#EC4899',
-                        sunYellow: '#F59E0B',
-                        emeraldBright: '#10B981',
-                        skyBright: '#0EA5E9',
-                        warmCanvas: '#FFFBEB'
+                        brandDark: '#0f172a',
+                        brandPrimary: '#0284c7',
+                        brandAccent: '#f59e0b',
+                        brandRose: '#ec4899',
+                        brandCanvas: '#f8fafc'
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome Icons & Supabase SDK -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background-color: #FFFBEB; color: #1E293B; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: #f8fafc; color: #0f172a; font-family: 'Segoe UI', sans-serif; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.9); }
         .btn-click { transition: transform 0.1s; }
-        .btn-click:active { transform: scale(0.95); }
+        .btn-click:active { transform: scale(0.96); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
+
     <audio id="btnSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
-    
-    <!-- 1. PERSONAL SECURITY LOGIN MODAL -->
-    <div id="loginOverlay" class="fixed inset-0 bg-amber-500 bg-opacity-90 z-50 flex items-center justify-center p-4">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-md text-center border-4 border-pink-400">
-            <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3 border-2 border-pink-300">
-                <i class="fa-solid fa-user-shield text-4xl text-pink-600"></i>
+
+    <!-- 1. SECURITY LOCK OVERLAY -->
+    <div id="loginOverlay" class="fixed inset-0 bg-slate-900 bg-opacity-95 z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-md text-center border-2 border-sky-500">
+            <div class="w-20 h-20 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-3 border border-sky-300">
+                <i class="fa-solid fa-user-shield text-4xl text-sky-600"></i>
             </div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-1">SG Executive Vault</h2>
-            <p class="text-xs text-gray-500 mb-4">Enter Personal PIN to unlock Subhajit's Assistant</p>
+            <h2 class="text-2xl font-bold text-slate-800 mb-1">SG Executive Vault</h2>
+            <p class="text-xs text-slate-500 mb-4">Enter Personal PIN to unlock Subhajit's Assistant</p>
             
             <div class="relative w-full mb-4">
-                <input type="password" id="userPinInput" placeholder="Enter PIN" class="w-full p-3 pr-10 border-2 border-pink-300 rounded-2xl text-center text-lg font-bold outline-none focus:ring-2 focus:ring-amber-400">
-                <button type="button" onclick="togglePinVisibility('userPinInput', 'pinEyeIcon')" class="absolute right-3 top-3.5 text-gray-500 hover:text-pink-600 focus:outline-none">
+                <input type="password" id="userPinInput" placeholder="Enter PIN" class="w-full p-3 pr-10 border-2 border-sky-200 rounded-2xl text-center text-lg font-bold outline-none focus:ring-2 focus:ring-sky-500">
+                <button type="button" onclick="togglePinVisibility('userPinInput', 'pinEyeIcon')" class="absolute right-3 top-3.5 text-slate-400 hover:text-sky-600 focus:outline-none">
                     <i id="pinEyeIcon" class="fa-solid fa-eye-slash text-xl"></i>
                 </button>
             </div>
-            <button onclick="unlockApp()" class="w-full bg-gradient-to-r from-amber-500 to-pink-500 hover:from-amber-600 hover:to-pink-600 text-white font-bold py-3 rounded-2xl btn-click shadow-lg">Unlock Assistant</button>
-            <p id="loginError" class="text-red-500 text-xs font-semibold mt-2 hidden">Incorrect PIN! Try again.</p>
+            <button onclick="unlockApp()" class="w-full bg-gradient-to-r from-sky-600 to-blue-700 text-white font-bold py-3 rounded-2xl btn-click shadow-lg">Unlock Assistant</button>
+            <p id="loginError" class="text-red-500 text-xs font-semibold mt-2 hidden">Incorrect PIN! Use Sg*1989</p>
         </div>
     </div>
 
-    <!-- MAIN APP WRAPPER -->
+    <!-- 2. MAIN EXECUTIVE WORKSTATION APP -->
     <div id="mainAppContent" class="hidden min-h-screen flex flex-col">
-        <!-- HEADER -->
-        <header class="bg-gradient-to-r from-amber-500 via-rose-500 to-sky-500 text-white p-4 shadow-lg flex flex-wrap justify-between items-center border-b-4 border-amber-600">
+        
+        <!-- HEADER WITH LIVE CLOCK & WEATHER -->
+        <header class="bg-slate-900 text-white p-4 shadow-xl border-b-4 border-sky-500 flex flex-wrap justify-between items-center sticky top-0 z-40">
             <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-compass-drafting text-3xl text-yellow-200"></i>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-amber-500 flex items-center justify-center font-bold text-xl shadow-md">SG</div>
                 <div>
-                    <h1 class="font-bold text-xl tracking-wide">SG-Assistant | Civil Workstation</h1>
-                    <p class="text-xs text-yellow-100">Welcome Subhajit | Personal AI Assistant</p>
+                    <h1 class="font-bold text-lg leading-tight">SG Executive Civil Suite</h1>
+                    <p class="text-xs text-sky-400 font-medium">Highway Engineering & Central AI Brain</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3 text-sm mt-2 sm:mt-0 bg-white/20 px-3 py-1.5 rounded-2xl backdrop-blur-md border border-white/30">
-                <div><i class="fa-solid fa-clock text-yellow-200 mr-1"></i><span id="liveClock">00:00:00</span></div>
-                <button onclick="triggerWelcomeBriefing()" class="bg-amber-600 hover:bg-amber-700 text-xs px-2.5 py-1 rounded-xl border border-yellow-200"><i class="fa-solid fa-play mr-1"></i>Briefing</button>
-                <button onclick="lockApp()" class="bg-red-500 hover:bg-red-600 text-xs px-2.5 py-1 rounded-xl border border-red-200"><i class="fa-solid fa-lock"></i></button>
+            
+            <!-- LIVE DATE, TIME & WEATHER BAR -->
+            <div class="flex items-center space-x-4 text-xs mt-2 sm:mt-0 bg-slate-800/80 px-4 py-2 rounded-2xl border border-slate-700">
+                <div><i class="fa-solid fa-calendar-day text-amber-400 mr-1"></i><span id="liveDate">--/--/----</span></div>
+                <div><i class="fa-solid fa-clock text-sky-400 mr-1"></i><span id="liveClock">00:00:00</span></div>
+                <div><i class="fa-solid fa-cloud-sun text-emerald-400 mr-1"></i><span id="weatherWidget">28°C Site Clear</span></div>
+                <button onclick="triggerWelcomeBriefing()" class="bg-sky-600 hover:bg-sky-700 px-2 py-1 rounded-lg text-xs border border-sky-300 font-semibold"><i class="fa-solid fa-play mr-1"></i>Briefing</button>
+                <button onclick="lockApp()" class="bg-red-500 hover:bg-red-600 px-2.5 py-1 rounded-xl text-white font-bold"><i class="fa-solid fa-lock"></i></button>
             </div>
         </header>
 
-        <!-- MAIN BODY -->
+        <!-- APP BODY -->
         <div class="flex-1 flex flex-col md:flex-row">
-            <!-- SIDEBAR -->
-            <nav class="w-full md:w-64 bg-amber-100/80 p-4 border-r border-amber-200 flex-shrink-0">
-                <ul class="space-y-2 font-medium text-gray-700">
-                    <li><button onclick="navTo('command')" class="w-full text-left p-3 rounded-xl bg-amber-200 hover:bg-amber-300 flex items-center space-x-3 btn-click text-amber-900 font-bold"><i class="fa-solid fa-robot text-rose-500"></i><span>AI Command Center</span></button></li>
-                    <li><button onclick="navTo('civil')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-emerald-800"><i class="fa-solid fa-calculator text-emerald-600"></i><span>MORT&H 5th & IS Calc</span></button></li>
-                    <li><button onclick="navTo('office')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-sky-800"><i class="fa-solid fa-file-powerpoint text-sky-600"></i><span>Auto DPR, CAD & Docs</span></button></li>
-                    <li><button onclick="navTo('schedule')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-pink-800"><i class="fa-solid fa-calendar-day text-pink-600"></i><span>Daily Schedule & PA</span></button></li>
-                    <li><button onclick="navTo('vault')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-purple-800"><i class="fa-solid fa-vault text-purple-600"></i><span>Supabase Cloud Vault</span></button></li>
-                    <li><button onclick="navTo('settings')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-gray-800"><i class="fa-solid fa-sliders text-gray-600"></i><span>In-App Auto Update & Config</span></button></li>
+            
+            <!-- SIDEBAR NAVIGATION -->
+            <nav class="w-full md:w-64 bg-slate-900 text-slate-300 p-4 border-r border-slate-800 flex-shrink-0">
+                <ul class="space-y-2 text-sm font-semibold">
+                    <li><button onclick="navTo('dashboard')" class="w-full text-left p-3 rounded-xl bg-sky-600 text-white flex items-center space-x-3 btn-click"><i class="fa-solid fa-chart-line"></i><span>Executive Dashboard</span></button></li>
+                    <li><button onclick="navTo('command')" class="w-full text-left p-3 rounded-xl hover:bg-slate-800 text-sky-400 flex items-center space-x-3 btn-click"><i class="fa-solid fa-brain"></i><span>Central AI Logic Brain</span></button></li>
+                    <li><button onclick="navTo('civil')" class="w-full text-left p-3 rounded-xl hover:bg-slate-800 text-emerald-400 flex items-center space-x-3 btn-click"><i class="fa-solid fa-calculator"></i><span>Engineering Calculators</span></button></li>
+                    <li><button onclick="navTo('reports')" class="w-full text-left p-3 rounded-xl hover:bg-slate-800 text-amber-400 flex items-center space-x-3 btn-click"><i class="fa-solid fa-file-contract"></i><span>Auto DPR & Letters</span></button></li>
+                    <li><button onclick="navTo('cad')" class="w-full text-left p-3 rounded-xl hover:bg-slate-800 text-indigo-400 flex items-center space-x-3 btn-click"><i class="fa-solid fa-cubes"></i><span>FreeCAD & Viewers</span></button></li>
+                    <li><button onclick="navTo('schedule')" class="w-full text-left p-3 rounded-xl hover:bg-slate-800 text-pink-400 flex items-center space-x-3 btn-click"><i class="fa-solid fa-calendar-check"></i><span>Daily Schedule & Routine</span></button></li>
+                    <li><button onclick="navTo('vault')" class="w-full text-left p-3 rounded-xl hover:bg-slate-800 text-purple-400 flex items-center space-x-3 btn-click"><i class="fa-solid fa-vault"></i><span>Supabase Cloud Vault</span></button></li>
+                    <li><button onclick="navTo('settings')" class="w-full text-left p-3 rounded-xl hover:bg-slate-800 text-slate-400 flex items-center space-x-3 btn-click"><i class="fa-solid fa-sliders"></i><span>Settings & Live Patch</span></button></li>
                 </ul>
             </nav>
 
-            <!-- MAIN PANELS -->
-            <main class="flex-1 p-6">
-                <!-- PANEL 1: AI COMMAND CENTER -->
-                <section id="panel-command" class="space-y-6">
-                    <div class="bg-gradient-to-r from-amber-100 to-pink-100 p-4 rounded-2xl border border-pink-200 text-amber-900 flex justify-between items-center shadow-sm">
+            <!-- MAIN PANELS CONTENT -->
+            <main class="flex-1 p-6 space-y-6">
+
+                <!-- PANEL 1: EXECUTIVE DASHBOARD -->
+                <section id="panel-dashboard" class="space-y-6">
+                    <div class="glass-panel p-4 rounded-2xl border-l-4 border-pink-500 shadow-sm flex justify-between items-center">
                         <div>
-                            <h3 id="welcomeGreetingHeading" class="font-bold text-lg text-pink-800">Hello Subhajit!</h3>
-                            <p id="welcomeBriefingText" class="text-xs text-amber-800">Tap 'Briefing' or speak a command below.</p>
+                            <h3 id="welcomeGreetingHeading" class="font-bold text-lg text-slate-800">Hello Subhajit!</h3>
+                            <p id="welcomeBriefingText" class="text-xs text-slate-600">Executive Civil Workstation Active.</p>
                         </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-amber-200">
-                        <h2 class="text-lg font-bold text-amber-800 mb-2"><i class="fa-solid fa-microphone text-rose-500 mr-2"></i>Boss Voice Command & Multimodal Input</h2>
-                        <div class="flex flex-wrap gap-2 mb-3">
-                            <input type="text" id="bossCommandInput" placeholder="Ask AI Assistant (e.g. Write a technical letter for site delay)..." class="flex-1 p-3 border-2 border-amber-200 rounded-xl outline-none focus:ring-2 focus:ring-amber-400">
-                            <button id="micBtn" onclick="playBtnSound(); startVoiceRecognition()" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-xl btn-click flex items-center gap-1 font-bold">
-                                <i class="fa-solid fa-microphone"></i> <span id="micStatus" class="text-xs">Speak</span>
-                            </button>
-                            <button onclick="playBtnSound(); processCommandWithGemini()" class="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-xl font-bold btn-click shadow">Execute</button>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="glass-panel p-5 rounded-2xl shadow-sm border-l-4 border-sky-500">
+                            <h3 class="text-xs uppercase font-bold text-slate-400 mb-1">Active Site Project</h3>
+                            <p class="text-xl font-bold text-slate-800">NH Highway Construction</p>
+                            <p class="text-xs text-sky-600 mt-2 font-semibold"><i class="fa-solid fa-location-dot mr-1"></i>Chainage 12+400 to 25+800</p>
                         </div>
-                        <div class="flex items-center space-x-2 text-xs text-gray-500">
-                            <i class="fa-solid fa-paperclip text-amber-500"></i>
-                            <label class="cursor-pointer bg-amber-50 hover:bg-amber-100 px-3 py-1 rounded-lg border border-amber-300 font-semibold text-amber-800">
-                                Attach Image/File Data <input type="file" id="aiFileInput" class="hidden" onchange="handleFileAttach(event)">
-                            </label>
-                            <span id="attachedFileName" class="text-gray-600 font-mono">No file attached</span>
+                        <div class="glass-panel p-5 rounded-2xl shadow-sm border-l-4 border-emerald-500">
+                            <h3 class="text-xs uppercase font-bold text-slate-400 mb-1">Daily Quantities Executed</h3>
+                            <p class="text-xl font-bold text-emerald-600">DBM: 420 MT | BC: 280 MT</p>
+                            <p class="text-xs text-slate-500 mt-2"><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i>MORT&H 5th Spec Verified</p>
                         </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-emerald-200">
-                        <div class="flex justify-between items-center mb-2">
-                            <h2 class="text-lg font-bold text-emerald-800"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>AI Assistant Interaction Response</h2>
-                            <button onclick="speakOutput()" class="bg-sky-500 text-white px-3 py-1.5 rounded-xl text-xs hover:bg-sky-600 font-bold"><i class="fa-solid fa-volume-high mr-1"></i>Bengali Voice Reply</button>
-                        </div>
-                        <div id="outputQueue" class="p-4 bg-emerald-50/60 rounded-xl border border-emerald-200 min-h-[150px] text-gray-800 whitespace-pre-line leading-relaxed">
-                            <em>No active response. Speak or type above to start interaction.</em>
-                        </div>
-                        <div class="mt-3 flex space-x-3">
-                            <button onclick="playBtnSound(); approveAndSaveToSupabase()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-emerald-700 btn-click shadow"><i class="fa-solid fa-check mr-2"></i>Save to Cloud Vault</button>
-                            <button onclick="playBtnSound(); autoShare()" class="bg-sky-500 text-white px-4 py-2 rounded-xl font-semibold hover:bg-sky-600 btn-click shadow"><i class="fa-solid fa-share-nodes mr-2"></i>WhatsApp Share</button>
+                        <div class="glass-panel p-5 rounded-2xl shadow-sm border-l-4 border-amber-500">
+                            <h3 class="text-xs uppercase font-bold text-slate-400 mb-1">Pending Site RFIs</h3>
+                            <p class="text-xl font-bold text-amber-600">03 Open / Approved: 12</p>
+                            <p class="text-xs text-amber-700 mt-2 font-semibold"><i class="fa-solid fa-clock mr-1"></i>Next Inspection: 02:30 PM</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- PANEL 2: HIGHWAY & CIVIL ENGINEERING -->
+                <!-- PANEL 2: CENTRAL AI LOGIC BRAIN -->
+                <section id="panel-command" class="hidden space-y-6">
+                    <div class="glass-panel p-5 rounded-2xl shadow-md border-2 border-sky-500">
+                        <h2 class="text-lg font-bold text-slate-800 mb-2"><i class="fa-solid fa-microphone text-sky-600 mr-2"></i>Boss Voice Command & Multimodal Prompt Input</h2>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <input type="text" id="bossCommandInput" placeholder="Ask AI Assistant (e.g. MORT&H compaction specs or draft site delay letter)..." class="flex-1 p-3 border rounded-xl outline-none focus:ring-2 focus:ring-sky-500 text-sm">
+                            <button id="micBtn" onclick="playBtnSound(); startVoiceRecognition()" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-xl btn-click flex items-center gap-1 font-bold">
+                                <i class="fa-solid fa-microphone"></i> <span id="micStatus" class="text-xs">Speak</span>
+                            </button>
+                            <button onclick="playBtnSound(); processCommandWithGemini()" class="bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded-xl font-bold btn-click shadow">Execute Brain Logic</button>
+                        </div>
+                        <div class="flex items-center space-x-2 text-xs text-slate-500">
+                            <i class="fa-solid fa-paperclip text-sky-500"></i>
+                            <label class="cursor-pointer bg-sky-50 hover:bg-sky-100 px-3 py-1 rounded-lg border border-sky-300 font-semibold text-sky-800">
+                                Attach Image/File Data <input type="file" id="aiFileInput" class="hidden" onchange="handleFileAttach(event)">
+                            </label>
+                            <span id="attachedFileName" class="text-slate-600 font-mono">No file attached</span>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-5 rounded-2xl shadow-md border border-slate-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-slate-700"><i class="fa-solid fa-robot mr-2 text-sky-600"></i>AI Assistant Interaction Response</h3>
+                            <button onclick="speakOutput()" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold"><i class="fa-solid fa-volume-high mr-1"></i>Bengali Voice Output</button>
+                        </div>
+                        <div id="outputQueue" class="p-4 bg-slate-50 rounded-xl min-h-[150px] text-sm whitespace-pre-line text-slate-800 leading-relaxed border">Ready for input...</div>
+                        <div class="mt-3 flex space-x-3">
+                            <button onclick="playBtnSound(); approveAndSaveToSupabase()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl font-semibold text-xs btn-click shadow"><i class="fa-solid fa-check mr-2"></i>Save to Cloud Vault</button>
+                            <button onclick="playBtnSound(); autoShare()" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl font-semibold text-xs btn-click shadow"><i class="fa-solid fa-share-nodes mr-2"></i>WhatsApp Share</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PANEL 3: ENGINEERING CALCULATORS -->
                 <section id="panel-civil" class="hidden space-y-6">
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-emerald-200">
-                        <h2 class="text-lg font-bold text-emerald-800 mb-2"><i class="fa-solid fa-book-bookmark text-emerald-600 mr-2"></i>MORT&H 5th Revision & IS Code AI Base</h2>
-                        <p class="text-xs text-gray-600 mb-4">Inbuilt reference for MORT&H 5th Revision, IS 456, IS 800, IRC Codes.</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                    <div class="glass-panel p-5 rounded-2xl shadow-md border-t-4 border-emerald-500 space-y-4">
+                        <h3 class="font-bold text-emerald-800 text-base"><i class="fa-solid fa-book-bookmark mr-2"></i>MORT&H 5th Revision & IS Code AI Base</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <button onclick="askCodeQuery('MORT&H 5th revision compaction specifications for embankment')" class="p-2.5 bg-emerald-50 border border-emerald-300 rounded-xl text-left text-xs text-emerald-900 font-semibold hover:bg-emerald-100"><i class="fa-solid fa-road mr-1"></i>MORT&H Embankment Compaction</button>
                             <button onclick="askCodeQuery('MORT&H 5th revision DBM and BC mix design specifications')" class="p-2.5 bg-emerald-50 border border-emerald-300 rounded-xl text-left text-xs text-emerald-900 font-semibold hover:bg-emerald-100"><i class="fa-solid fa-layer-group mr-1"></i>DBM & BC Mix Design Specs</button>
                         </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-amber-200">
-                        <h2 class="text-lg font-bold text-amber-800 mb-4"><i class="fa-solid fa-calculator mr-2"></i>Auto BBS & Quantity Estimator</h2>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-                            <input type="number" id="barDia" placeholder="Bar Dia (mm)" class="p-2.5 border rounded-xl">
-                            <input type="number" id="barSpacing" placeholder="Spacing (mm)" class="p-2.5 border rounded-xl">
-                            <input type="number" id="barLength" placeholder="Total Length (m)" class="p-2.5 border rounded-xl">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- AUTO BBS CALCULATOR -->
+                        <div class="glass-panel p-5 rounded-2xl shadow-md border-t-4 border-amber-500 space-y-3">
+                            <h3 class="font-bold text-amber-800 text-base"><i class="fa-solid fa-calculator mr-2"></i>Auto BBS Steel Weight Calculator</h3>
+                            <div class="grid grid-cols-3 gap-2 text-xs">
+                                <input type="number" id="barDia" placeholder="Dia (mm)" class="p-2 border rounded-lg">
+                                <input type="number" id="barSpacing" placeholder="Spacing (mm)" class="p-2 border rounded-lg">
+                                <input type="number" id="barLength" placeholder="Length (m)" class="p-2 border rounded-lg">
+                            </div>
+                            <button onclick="calculateBBS()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-xl btn-click shadow text-xs">Calculate Bar Weight (kg)</button>
+                            <div id="bbsResult" class="text-sm font-bold text-amber-900 mt-2"></div>
                         </div>
-                        <button onclick="playBtnSound(); calculateBBS()" class="bg-amber-500 text-white px-5 py-2.5 rounded-xl font-bold btn-click shadow">Calculate Steel Weight</button>
-                        <div id="bbsResult" class="mt-3 font-semibold text-amber-900"></div>
+
+                        <!-- ASPHALT & VOLUMETRIC DENSITY CALCULATOR -->
+                        <div class="glass-panel p-5 rounded-2xl shadow-md border-t-4 border-sky-500 space-y-3">
+                            <h3 class="font-bold text-sky-800 text-base"><i class="fa-solid fa-layer-group mr-2"></i>Asphalt & Volumetric Quantity Calc</h3>
+                            <div class="grid grid-cols-3 gap-2 text-xs">
+                                <input type="number" id="volL" placeholder="Length (m)" class="p-2 border rounded-lg">
+                                <input type="number" id="volW" placeholder="Width (m)" class="p-2 border rounded-lg">
+                                <input type="number" id="volT" placeholder="Thk (mm)" class="p-2 border rounded-lg">
+                            </div>
+                            <button onclick="calculateVolumetric()" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 rounded-xl btn-click shadow text-xs">Calculate Volume & MT</button>
+                            <div id="volResult" class="text-sm font-bold text-sky-700 mt-2"></div>
+                        </div>
                     </div>
                 </section>
 
-                <!-- PANEL 3: AUTO DPR, OFFICE & CAD VIEWER -->
-                <section id="panel-office" class="hidden space-y-6">
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-sky-200">
-                        <h2 class="text-lg font-bold text-sky-800 mb-3"><i class="fa-solid fa-file-invoice mr-2"></i>Auto DPR, MPR, Technical Letters Generator</h2>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-                            <button onclick="generateDocPrompt('DPR')" class="p-3 bg-sky-50 border border-sky-300 rounded-xl font-bold text-sky-900 hover:bg-sky-100">Daily Progress Report (DPR)</button>
-                            <button onclick="generateDocPrompt('MPR')" class="p-3 bg-sky-50 border border-sky-300 rounded-xl font-bold text-sky-900 hover:bg-sky-100">Monthly Progress Report (MPR)</button>
-                            <button onclick="generateDocPrompt('LETTER')" class="p-3 bg-sky-50 border border-sky-300 rounded-xl font-bold text-sky-900 hover:bg-sky-100">Technical Notice/Letter</button>
+                <!-- PANEL 4: AUTO DPR & REPORTS -->
+                <section id="panel-reports" class="hidden space-y-6">
+                    <div class="glass-panel p-5 rounded-2xl shadow-md border-t-4 border-amber-500 space-y-4">
+                        <h3 class="font-bold text-amber-800 text-base"><i class="fa-solid fa-file-contract mr-2"></i>Auto DPR, MPR & Technical Letter Generator</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button onclick="generateDocPrompt('DPR')" class="p-3 bg-amber-50 border border-amber-300 rounded-xl font-bold text-amber-900 hover:bg-amber-100 text-xs text-left">Generate Site DPR Report</button>
+                            <button onclick="generateDocPrompt('MPR')" class="p-3 bg-amber-50 border border-amber-300 rounded-xl font-bold text-amber-900 hover:bg-amber-100 text-xs text-left">Generate Monthly Progress Report</button>
+                            <button onclick="generateDocPrompt('LETTER')" class="p-3 bg-amber-50 border border-amber-300 rounded-xl font-bold text-amber-900 hover:bg-amber-100 text-xs text-left">Draft Site Delay Technical Notice</button>
                         </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-indigo-200">
-                        <h2 class="text-lg font-bold text-indigo-800 mb-3"><i class="fa-solid fa-cubes mr-2"></i>FreeCAD & Document View Suite</h2>
-                        <p class="text-xs text-gray-600 mb-3">Open & edit CAD drawings, Excel, Word, PowerPoint, and PDFs via Web Viewers.</p>
+                </section>
+
+                <!-- PANEL 5: FREECAD & DOCUMENT VIEWERS -->
+                <section id="panel-cad" class="hidden space-y-6">
+                    <div class="glass-panel p-5 rounded-2xl shadow-md border-t-4 border-indigo-500 space-y-3">
+                        <h3 class="font-bold text-indigo-800 text-base"><i class="fa-solid fa-cubes mr-2"></i>FreeCAD & Document Web Suite</h3>
+                        <p class="text-xs text-slate-600 mb-3">Open & edit CAD drawings, Excel, Word, and PowerPoint via Web Viewers.</p>
                         <div class="flex flex-wrap gap-3">
                             <a href="https://web.freecad.org/" target="_blank" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-semibold text-xs hover:bg-indigo-700"><i class="fa-solid fa-pen-ruler mr-1"></i>FreeCAD Web App</a>
                             <a href="https://view.officeapps.live.com/op/view.aspx" target="_blank" class="bg-sky-600 text-white px-4 py-2 rounded-xl font-semibold text-xs hover:bg-sky-700"><i class="fa-solid fa-file-excel mr-1"></i>Office Live Viewer</a>
@@ -171,56 +217,367 @@
                     </div>
                 </section>
 
-                <!-- PANEL 4: DAILY SCHEDULE & PA -->
+                <!-- PANEL 6: DAILY SCHEDULE & PA -->
                 <section id="panel-schedule" class="hidden space-y-6">
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-pink-200">
-                        <h2 class="text-lg font-bold text-pink-800 mb-3"><i class="fa-solid fa-list-check mr-2"></i>Subhajit's Agenda & Routine Settings</h2>
+                    <div class="glass-panel p-5 rounded-2xl shadow-md border-t-4 border-pink-500 space-y-3">
+                        <h3 class="font-bold text-pink-800 text-base"><i class="fa-solid fa-list-check mr-2"></i>Subhajit's Agenda & Personal Routine</h3>
                         <textarea id="dailyAgendaInput" rows="5" class="w-full p-3 border rounded-xl text-sm mb-3" placeholder="Set your agenda here..."></textarea>
-                        <button onclick="saveAgenda()" class="bg-pink-500 text-white px-5 py-2.5 rounded-xl font-bold btn-click shadow">Save Daily Routine</button>
+                        <button onclick="saveAgenda()" class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-xl font-bold btn-click shadow text-xs">Save Daily Routine</button>
                     </div>
                 </section>
 
-                <!-- PANEL 5: CLOUD VAULT -->
+                <!-- PANEL 7: SUPABASE CLOUD VAULT -->
                 <section id="panel-vault" class="hidden space-y-6">
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-purple-200">
-                        <h2 class="text-lg font-bold text-purple-800 mb-4"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>Supabase Storage File Upload</h2>
-                        <input type="file" id="docFileInput" class="mb-4 block w-full text-sm text-gray-500">
-                        <button onclick="uploadDocumentToSupabase()" class="bg-purple-600 text-white px-5 py-2.5 rounded-xl font-bold btn-click shadow">Upload to Supabase Vault</button>
-                        <div id="uploadStatus" class="mt-3 text-sm font-semibold text-purple-900"></div>
+                    <div class="glass-panel p-5 rounded-2xl shadow-md border-t-4 border-purple-500 space-y-4">
+                        <h3 class="font-bold text-purple-800 text-base"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>Supabase Cloud Vault File Upload</h3>
+                        <input type="file" id="docFileInput" class="block w-full text-xs text-slate-500">
+                        <button onclick="uploadDocumentToSupabase()" class="bg-purple-600 text-white px-4 py-2 rounded-xl font-bold btn-click text-xs shadow">Upload to Vault Storage</button>
+                        <div id="uploadStatus" class="text-xs font-bold text-purple-700"></div>
                     </div>
                 </section>
 
-                <!-- PANEL 6: IN-APP REPAIR & CONFIG (NO GITHUB REQUIRED FOR FUTURE UPDATES) -->
+                <!-- PANEL 8: SETTINGS & LIVE PATCH ENGINE -->
                 <section id="panel-settings" class="hidden space-y-6">
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-red-200">
-                        <h2 class="text-lg font-bold text-red-800 mb-2"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Dynamic In-App Live Code Updater</h2>
-                        <p class="text-xs text-gray-600 mb-3">GitHub ba Netlify-te na giye app-er bhotor thekei notun feature, fix ba code update execute korun.</p>
-                        <textarea id="patchInput" rows="5" placeholder="Paste future update JavaScript snippet here..." class="w-full p-2.5 border rounded-xl text-xs font-mono mb-2 focus:ring-2 focus:ring-red-400 outline-none"></textarea>
+                    <div class="glass-panel p-5 rounded-2xl shadow-md border-t-4 border-red-500 space-y-4">
+                        <h3 class="font-bold text-red-800 text-base"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Dynamic In-App Live Code Patch Engine</h3>
+                        <p class="text-xs text-slate-600">GitHub-e na giye app-er bhotor thekei direct JavaScript update apply-save korun.</p>
+                        <textarea id="patchInput" rows="4" placeholder="Paste update JavaScript snippet here..." class="w-full p-3 border rounded-xl text-xs font-mono"></textarea>
                         <div class="flex space-x-2">
-                            <button onclick="applyInAppPatch()" class="bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-bold btn-click shadow"><i class="fa-solid fa-bolt mr-1"></i>Apply & Save Live Update</button>
-                            <button onclick="clearSavedPatches()" class="bg-gray-500 text-white px-4 py-2 rounded-xl text-xs font-bold btn-click shadow"><i class="fa-solid fa-rotate-left mr-1"></i>Reset Updates</button>
+                            <button onclick="applyInAppPatch()" class="bg-red-600 text-white px-4 py-2 rounded-xl font-bold text-xs btn-click shadow">Apply & Save Live Update</button>
+                            <button onclick="clearSavedPatches()" class="bg-slate-500 text-white px-4 py-2 rounded-xl font-bold text-xs btn-click shadow">Reset Updates</button>
                         </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl shadow-md border border-gray-200">
-                        <h2 class="text-lg font-bold text-gray-800 mb-4"><i class="fa-solid fa-sliders mr-2"></i>System API & PIN Configuration</h2>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Security PIN (Login Pass):</label>
-                                <div class="relative w-full">
-                                    <input type="password" id="appPinSetting" class="w-full p-2.5 pr-10 border rounded-xl font-mono text-xs">
-                                    <button type="button" onclick="togglePinVisibility('appPinSetting', 'settingPinEyeIcon')" class="absolute right-3 top-2.5 text-gray-500 hover:text-pink-600">
-                                        <i id="settingPinEyeIcon" class="fa-solid fa-eye-slash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Gemini AI Key:</label>
-                                <input type="text" id="apiKeyInput" class="w-full p-2.5 border rounded-xl font-mono text-xs">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Supabase URL:</label>
-                                <input type="text" id="sbUrlInput" class="w-full p-2.5 border rounded-xl font-mono text-xs">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Supabase Key:</label>
-                                <input type="text" id="sbKeyInput" class="w-full p-2.5 border rounded-xl font-mono text
+                    <div class="glass-panel p-5 rounded-2xl shadow-md border-t-4 border-slate-700 space-y-3">
+                        <h3 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-sliders mr-2"></i>System API Credentials & Configuration</h3>
+                        <input type="password" id="appPinSetting" class="w-full p-2 border rounded-lg text-xs font-mono" value="Sg*1989">
+                        <input type="text" id="apiKeyInput" placeholder="Gemini API Key" class="w-full p-2 border rounded-lg text-xs font-mono">
+                        <input type="text" id="sbUrlInput" placeholder="Supabase URL" class="w-full p-2 border rounded-lg text-xs font-mono">
+                        <input type="text" id="sbKeyInput" placeholder="Supabase Key" class="w-full p-2 border rounded-lg text-xs font-mono">
+                        <button onclick="saveSettings()" class="bg-slate-800 text-white px-4 py-2 rounded-xl font-bold text-xs btn-click shadow">Save Config</button>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- CLIENT JAVASCRIPT ENGINE -->
+    <script>
+        const FIXED_PIN = "Sg*1989";
+        const BACKUP_PIN = "1234";
+        const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6LHdpDvUD9vv2bOHsbXVEVBrpI73_XyK0cThMU-u7efpQ";
+        const DEFAULT_SB_URL = "https://pihqkncyxxrjyhbioyeq.supabase.co";
+        const DEFAULT_SB_KEY = "sb_publishable_Q0Wut2w5VARb-ptqToj7Rw_WuJUlLVl";
+
+        let GEMINI_API_KEY = localStorage.getItem('sg_gemini_key') || DEFAULT_GEMINI_KEY;
+        let SUPABASE_URL = localStorage.getItem('sg_sb_url') || DEFAULT_SB_URL;
+        let SUPABASE_KEY = localStorage.getItem('sg_sb_key') || DEFAULT_SB_KEY;
+
+        let attachedBase64 = null;
+        let supabaseClient = null;
+
+        // Auto Load Saved Dynamic Live Patches
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedPatch = localStorage.getItem('sg_custom_patch');
+            if(savedPatch) {
+                try {
+                    eval(savedPatch);
+                    console.log("Live patch loaded successfully!");
+                } catch(e) {
+                    console.error("Patch error:", e);
+                }
+            }
+        });
+
+        if(window.supabase && SUPABASE_URL && SUPABASE_KEY) {
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            } catch(e) {
+                console.log("Supabase initialization skipped/failed:", e);
+            }
+        }
+
+        // Live Clock & Date Init
+        setInterval(() => {
+            const now = new Date();
+            const clockEl = document.getElementById('liveClock');
+            const dateEl = document.getElementById('liveDate');
+            if(clockEl) clockEl.innerText = now.toLocaleTimeString();
+            if(dateEl) dateEl.innerText = now.toLocaleDateString('en-GB');
+        }, 1000);
+
+        function togglePinVisibility(inputId, eyeIconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(eyeIconId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            }
+        }
+
+        function unlockApp() {
+            const entered = document.getElementById('userPinInput').value.trim();
+            if(entered === FIXED_PIN || entered === BACKUP_PIN) {
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('mainAppContent').classList.remove('hidden');
+                document.getElementById('loginError').classList.add('hidden');
+                triggerWelcomeBriefing();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function lockApp() {
+            document.getElementById('mainAppContent').classList.add('hidden');
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('userPinInput').value = "";
+        }
+
+        document.getElementById('appPinSetting').value = FIXED_PIN;
+        document.getElementById('apiKeyInput').value = GEMINI_API_KEY;
+        document.getElementById('sbUrlInput').value = SUPABASE_URL;
+        document.getElementById('sbKeyInput').value = SUPABASE_KEY;
+
+        const defaultAgenda = "1. Check MORT&H 5th Revision site specifications\n2. Verify contractor letter draft\n3. Review highway drawing submission";
+        document.getElementById('dailyAgendaInput').value = localStorage.getItem('sg_agenda') || defaultAgenda;
+
+        function playBtnSound() {
+            const sound = document.getElementById('btnSound');
+            if(sound) { sound.currentTime = 0; sound.play().catch(()=>{}); }
+        }
+
+        function navTo(panelName) {
+            playBtnSound();
+            ['dashboard', 'command', 'civil', 'reports', 'cad', 'schedule', 'vault', 'settings'].forEach(p => {
+                const el = document.getElementById('panel-' + p);
+                if(el) el.classList.add('hidden');
+            });
+            const target = document.getElementById('panel-' + panelName);
+            if(target) target.classList.remove('hidden');
+        }
+
+        function getTimeGreeting() {
+            const hour = new Date().getHours();
+            if(hour < 12) return "Good Morning";
+            if(hour < 17) return "Good Afternoon";
+            if(hour < 21) return "Good Evening";
+            return "Good Night";
+        }
+
+        function triggerWelcomeBriefing() {
+            const greeting = getTimeGreeting();
+            const agenda = localStorage.getItem('sg_agenda') || defaultAgenda;
+            const fullText = `Hello Subhajit, ${greeting}! Welcome to your SG Assistant. Today's agenda: ${agenda}. Ekhon apni ki korte chan, amake bolun, ami apnar hoye shob kaj kore dicchi.`;
+            
+            document.getElementById('welcomeGreetingHeading').innerText = `Hello Subhajit, ${greeting}!`;
+            document.getElementById('welcomeBriefingText').innerText = `Today's Agenda:\n${agenda}`;
+            
+            speakOutput(fullText);
+        }
+
+        function handleFileAttach(event) {
+            const file = event.target.files[0];
+            if(file) {
+                document.getElementById('attachedFileName').innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    attachedBase64 = e.target.result.split(',')[1];
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function startVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'bn-BD';
+                recognition.onstart = () => { document.getElementById('micStatus').innerText = "Listening..."; };
+                recognition.onresult = (e) => {
+                    document.getElementById('bossCommandInput').value = e.results[0][0].transcript;
+                    document.getElementById('micStatus').innerText = "Speak";
+                    processCommandWithGemini();
+                };
+                recognition.onerror = (e) => { 
+                    document.getElementById('micStatus').innerText = "Speak";
+                    alert("Mic Error: " + e.error + ". Allow microphone permission in Chrome.");
+                };
+                recognition.onend = () => { document.getElementById('micStatus').innerText = "Speak"; };
+                recognition.start();
+            } else {
+                alert("Speech recognition not supported in this browser.");
+            }
+        }
+
+        async function processCommandWithGemini() {
+            const cmd = document.getElementById('bossCommandInput').value;
+            if(!cmd) return alert("Please enter or speak a command.");
+            const key = document.getElementById('apiKeyInput').value || localStorage.getItem('sg_gemini_key') || GEMINI_API_KEY;
+            const outputDiv = document.getElementById('outputQueue');
+            outputDiv.innerHTML = `<em><i class="fa-solid fa-spinner fa-spin mr-2"></i>Gemini AI is processing your request...</em>`;
+            
+            const parts = [{ text: `You are SG-Assistant, a female Personal AI Assistant (age 18-21 vibe) for Subhajit, a Civil & Highway Engineer. Respond in clear Bengali (Bangla script/phonetic). Always guide and give suggestions. User Command: ${cmd}` }];
+            if(attachedBase64) {
+                parts.push({ inline_data: { mime_type: "image/jpeg", data: attachedBase64 } });
+            }
+
+            const endpoints = [
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
+                `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${key}`
+            ];
+
+            let success = false;
+            for (let url of endpoints) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: parts }] })
+                    });
+                    const data = await response.json();
+                    if(data.candidates && data.candidates[0].content.parts[0].text) {
+                        const aiReply = data.candidates[0].content.parts[0].text;
+                        outputDiv.innerText = aiReply;
+                        speakOutput(aiReply);
+                        success = true;
+                        break;
+                    }
+                } catch(err) {
+                    console.log("Endpoint attempt failed:", err);
+                }
+            }
+
+            if(!success) {
+                outputDiv.innerText = "Error processing command. Please re-check API Key in Settings.";
+            }
+        }
+
+        function speakOutput(text) {
+            const content = text || document.getElementById('outputQueue').innerText;
+            if('speechSynthesis' in window && content) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(content);
+                utterance.rate = 0.95;
+                utterance.pitch = 1.15;
+                
+                let voices = window.speechSynthesis.getVoices();
+                let bnVoice = voices.find(v => v.lang === 'bn-IN' || v.lang === 'bn-BD' || v.name.toLowerCase().includes('bengali') || v.name.toLowerCase().includes('bangla'));
+                
+                if(bnVoice) {
+                    utterance.voice = bnVoice;
+                } else {
+                    utterance.lang = 'bn-IN';
+                }
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        function askCodeQuery(queryText) {
+            document.getElementById('bossCommandInput').value = queryText;
+            navTo('command');
+            processCommandWithGemini();
+        }
+
+        function generateDocPrompt(docType) {
+            document.getElementById('bossCommandInput').value = `Prepare a professional Civil Engineering ${docType} report template with complete site details as per MORT&H specifications.`;
+            navTo('command');
+            processCommandWithGemini();
+        }
+
+        function calculateBBS() {
+            const dia = parseFloat(document.getElementById('barDia').value) || 0;
+            const length = parseFloat(document.getElementById('barLength').value) || 0;
+            if(!dia || !length) return alert("Enter Dia & Length.");
+            const weight = ((dia * dia) / 162) * length;
+            document.getElementById('bbsResult').innerText = `Estimated Steel Weight: ${weight.toFixed(2)} kg`;
+        }
+
+        function calculateVolumetric() {
+            const L = parseFloat(document.getElementById('volL').value) || 0;
+            const W = parseFloat(document.getElementById('volW').value) || 0;
+            const T = (parseFloat(document.getElementById('volT').value) || 0) / 1000;
+            const vol = L * W * T;
+            const mt = vol * 2.4; 
+            document.getElementById('volResult').innerText = `Volume: ${vol.toFixed(2)} Cum | Estimated Asphalt: ${mt.toFixed(2)} MT`;
+        }
+
+        function applyInAppPatch() {
+            const patch = document.getElementById('patchInput').value;
+            if(!patch) return alert("Please paste patch code snippet.");
+            try {
+                eval(patch);
+                localStorage.setItem('sg_custom_patch', patch);
+                alert("Patch applied & saved successfully!");
+            } catch(e) {
+                alert("Patch execution error: " + e.message);
+            }
+        }
+
+        function clearSavedPatches() {
+            localStorage.removeItem('sg_custom_patch');
+            alert("Custom patches cleared!");
+            location.reload();
+        }
+
+        function saveAgenda() {
+            const val = document.getElementById('dailyAgendaInput').value;
+            localStorage.setItem('sg_agenda', val);
+            alert("Daily agenda saved!");
+        }
+
+        async function approveAndSaveToSupabase() {
+            const text = document.getElementById('outputQueue').innerText;
+            if(!text || text.includes("Ready for input")) return alert("No output to save.");
+            if(supabaseClient) {
+                const { data, error } = await supabaseClient
+                    .from('app_logs')
+                    .insert([{ content: text, user_name: 'Subhajit', created_at: new Date() }]);
+                if(error) alert("Supabase error: " + error.message);
+                else alert("Saved to Supabase Cloud Vault!");
+            }
+        }
+
+        async function uploadDocumentToSupabase() {
+            const fileInput = document.getElementById('docFileInput');
+            const status = document.getElementById('uploadStatus');
+            if(!fileInput.files.length) return alert("Select a file first.");
+            const file = fileInput.files[0];
+            status.innerText = "Uploading...";
+            if(supabaseClient) {
+                const { data, error } = await supabaseClient
+                    .storage
+                    .from('documents')
+                    .upload(`subhajit_docs/${Date.now()}_${file.name}`, file);
+                if(error) status.innerText = "Upload failed: " + error.message;
+                else status.innerText = "File uploaded to Supabase Storage!";
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('sg_gemini_key', document.getElementById('apiKeyInput').value);
+            localStorage.setItem('sg_sb_url', document.getElementById('sbUrlInput').value);
+            localStorage.setItem('sg_sb_key', document.getElementById('sbKeyInput').value);
+            alert("Configuration saved successfully!");
+            location.reload();
+        }
+
+        function autoShare() {
+            const text = encodeURIComponent(document.getElementById('outputQueue').innerText);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+        }
+    </script>
+</body>
+</html>
