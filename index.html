@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SG-Assistant | Executive Civil Workstation</title>
-    <!-- Tailwind CSS (Bright & Elegant Theme) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -83,7 +83,7 @@
                     <li><button onclick="navTo('office')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-sky-800"><i class="fa-solid fa-file-powerpoint text-sky-600"></i><span>Auto DPR, CAD & Docs</span></button></li>
                     <li><button onclick="navTo('schedule')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-pink-800"><i class="fa-solid fa-calendar-day text-pink-600"></i><span>Daily Schedule & PA</span></button></li>
                     <li><button onclick="navTo('vault')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-purple-800"><i class="fa-solid fa-vault text-purple-600"></i><span>Supabase Cloud Vault</span></button></li>
-                    <li><button onclick="navTo('settings')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-gray-800"><i class="fa-solid fa-sliders text-gray-600"></i><span>In-App Repair & Config</span></button></li>
+                    <li><button onclick="navTo('settings')" class="w-full text-left p-3 rounded-xl hover:bg-amber-200 flex items-center space-x-3 btn-click text-gray-800"><i class="fa-solid fa-sliders text-gray-600"></i><span>In-App Auto Update & Config</span></button></li>
                 </ul>
             </nav>
 
@@ -190,13 +190,16 @@
                     </div>
                 </section>
 
-                <!-- PANEL 6: IN-APP REPAIR & CONFIG -->
+                <!-- PANEL 6: IN-APP REPAIR & CONFIG (NO GITHUB REQUIRED FOR FUTURE UPDATES) -->
                 <section id="panel-settings" class="hidden space-y-6">
                     <div class="bg-white p-5 rounded-2xl shadow-md border border-red-200">
-                        <h2 class="text-lg font-bold text-red-800 mb-2"><i class="fa-solid fa-wrench mr-2"></i>In-App Repair & Patch Engine</h2>
-                        <p class="text-xs text-gray-600 mb-3">Netlify-te na giye app-er bhotor thekei sorasori code update othoba fix korun.</p>
-                        <textarea id="patchInput" rows="4" placeholder="Paste updated JavaScript or HTML patch snippet here..." class="w-full p-2.5 border rounded-xl text-xs font-mono mb-2"></textarea>
-                        <button onclick="applyInAppPatch()" class="bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-bold btn-click shadow">Apply Patch & Live Reload</button>
+                        <h2 class="text-lg font-bold text-red-800 mb-2"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Dynamic In-App Live Code Updater</h2>
+                        <p class="text-xs text-gray-600 mb-3">GitHub ba Netlify-te na giye app-er bhotor thekei notun feature, fix ba code update execute korun.</p>
+                        <textarea id="patchInput" rows="5" placeholder="Paste future update JavaScript snippet here..." class="w-full p-2.5 border rounded-xl text-xs font-mono mb-2 focus:ring-2 focus:ring-red-400 outline-none"></textarea>
+                        <div class="flex space-x-2">
+                            <button onclick="applyInAppPatch()" class="bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-bold btn-click shadow"><i class="fa-solid fa-bolt mr-1"></i>Apply & Save Live Update</button>
+                            <button onclick="clearSavedPatches()" class="bg-gray-500 text-white px-4 py-2 rounded-xl text-xs font-bold btn-click shadow"><i class="fa-solid fa-rotate-left mr-1"></i>Reset Updates</button>
+                        </div>
                     </div>
                     <div class="bg-white p-5 rounded-2xl shadow-md border border-gray-200">
                         <h2 class="text-lg font-bold text-gray-800 mb-4"><i class="fa-solid fa-sliders mr-2"></i>System API & PIN Configuration</h2>
@@ -220,16 +223,4 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold mb-1">Supabase Key:</label>
-                                <input type="text" id="sbKeyInput" class="w-full p-2.5 border rounded-xl font-mono text-xs">
-                            </div>
-                            <button onclick="saveSettings()" class="bg-amber-500 text-white px-5 py-2.5 rounded-xl font-bold btn-click shadow">Save Configuration</button>
-                        </div>
-                    </div>
-                </section>
-            </main>
-        </div>
-    </div>
-
-    <!-- CLIENT SCRIPT ENGINE -->
-    <script>
-        let USER_PIN = localStorage.getItem('sg
+                                <input type="text" id="sbKeyInput" class="w-full p-2.5 border rounded-xl font-mono text
